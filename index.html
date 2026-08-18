@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color"
+      content="#080b10">
+
+<title>Musu Countdown</title>
+
+
+<style>
+
+/* ==============================
+   PAGE
+   ============================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+}
+
+body {
+
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            #293c4d,
+            #111820 55%,
+            #05070a
+        );
+
+    color: white;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+}
+
+
+/* ==============================
+   MAIN APP
+   ============================== */
+
+.app {
+
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+
+    max-width: 520px;
+
+    margin: auto;
+
+    position: relative;
+
+    overflow: hidden;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    padding-top: 30px;
+}
+
+
+/* ==============================
+   HEADER
+   ============================== */
+
+.header {
+
+    position: relative;
+
+    z-index: 10;
+
+    text-align: center;
+
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.eyebrow {
+
+    color: #4cc9f0;
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    letter-spacing: 4px;
+
+    margin-bottom: 10px;
+}
+
+h1 {
+
+    margin: 0;
+
+    font-size:
+        clamp(38px, 11vw, 56px);
+
+    line-height: 1;
+
+    font-weight: 900;
+}
+
+.subtitle {
+
+    margin-top: 10px;
+
+    color: #a1aab6;
+
+    font-size: 14px;
+}
+
+
+/* ==============================
+   COUNTDOWN
+   ============================== */
+
+.countdown {
+
+    width: min(82vw, 330px);
+
+    aspect-ratio: 1;
+
+    position: relative;
+
+    margin-top: 28px;
+
+    z-index: 5;
+}
+
+
+/* Glow */
+
+.countdown:before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 12%;
+
+    border-radius: 50%;
+
+    background: #4cc9f0;
+
+    opacity: 0.08;
+
+    filter: blur(25px);
+}
+
+
+/* ==============================
+   SVG CIRCLE
+   ============================== */
+
+.ring {
+
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    left: 0;
+    top: 0;
+
+    transform: rotate(-90deg);
+}
+
+.ring-background {
+
+    fill: none;
+
+    stroke: #29313b;
+
+    stroke-width: 12;
+}
+
+.ring-progress {
+
+    fill: none;
+
+    stroke: #4cc9f0;
+
+    stroke-width: 12;
+
+    stroke-linecap: round;
+
+    transition:
+        stroke-dashoffset 0.5s linear;
+}
+
+
+/* ==============================
+   CENTER
+   ============================== */
+
+.center {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+}
+
+.center-title {
+
+    color: #8b96a4;
+
+    font-size: 10px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 12px;
+}
+
+.time {
+
+    font-size:
+        clamp(20px, 6.5vw, 34px);
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    white-space: nowrap;
+
+    font-variant-numeric:
+        tabular-nums;
+}
+
+.labels {
+
+    margin-top: 9px;
+
+    color: #626d7b;
+
+    font-size: 7px;
+
+    letter-spacing: 1px;
+}
+
+
+/* ==============================
+   TARGET
+   ============================== */
+
+.target {
+
+    position: relative;
+
+    z-index: 10;
+
+    text-align: center;
+
+    margin-top: 17px;
+}
+
+.target-label {
+
+    color: #5e6977;
+
+    font-size: 9px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+}
+
+.target-date {
+
+    margin-top: 6px;
+
+    color: #d5dbe2;
+
+    font-size: 14px;
+}
+
+
+/* ==============================
+   STATUS
+   ============================== */
+
+.status {
+
+    margin-top: 7px;
+
+    color: #4cc9f0;
+
+    font-size: 9px;
+}
+
+
+/* ==============================
+   BACKGROUND PEOPLE
+   ============================== */
+
+.people {
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    bottom: -20px;
+
+    height: 48%;
+
+    z-index: 1;
+
+    pointer-events: none;
+
+    opacity: 0.40;
+}
+
+.man {
+
+    position: absolute;
+
+    bottom: 0;
+
+    width: 44%;
+
+    max-width: 190px;
+}
+
+.man-left {
+
+    left: -5%;
+}
+
+.man-right {
+
+    right: -5%;
+}
+
+
+/* ==============================
+   SMALL PHONES
+   ============================== */
+
+@media (max-height: 700px) {
+
+    .app {
+        padding-top: 22px;
+    }
+
+    .countdown {
+        width: 270px;
+        margin-top: 18px;
+    }
+
+    .target {
+        margin-top: 10px;
+    }
+}
+
+@media (max-height: 620px) {
+
+    h1 {
+        font-size: 34px;
+    }
+
+    .subtitle {
+        font-size: 11px;
+    }
+
+    .countdown {
+        width: 235px;
+        margin-top: 10px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+<!-- ==============================
+     HEADER
+     ============================== -->
+
+<div class="header">
+
+    <div class="eyebrow">
+        COUNTDOWN
+    </div>
+
+    <h1>
+        September 18
+    </h1>
+
+    <div class="subtitle">
+        The countdown has begun for Musu!
+    </div>
+
+</div>
+
+
+<!-- ==============================
+     BACKGROUND MEN
+     ============================== -->
+
+<div class="people">
+
+
+<!-- ==============================
+     LEFT MAN
+     ============================== -->
+
+<svg
+    class="man man-left"
+    viewBox="0 0 220 420"
+>
+
+
+<!-- legs -->
+
+<path
+    d="M83 300 L68 390"
+    stroke="#202631"
+    stroke-width="25"
+    stroke-linecap="round"
+/>
+
+<path
+    d="M128 300 L145 390"
+    stroke="#202631"
+    stroke-width="25"
+    stroke-linecap="round"
+/>
+
+
+<!-- shoes -->
+
+<ellipse
+    cx="62"
+    cy="397"
+    rx="32"
+    ry="10"
+    fill="#0d1116"
+/>
+
+<ellipse
+    cx="150"
+    cy="397"
+    rx="32"
+    ry="10"
+    fill="#0d1116"
+/>
+
+
+<!-- body -->
+
+<path
+    d="
+        M65 185
+        Q105 165 145 185
+        L158 305
+        Q105 325 52 305
+        Z
+    "
+    fill="#405d7a"
+/>
+
+
+<!-- neck -->
+
+<rect
+    x="91"
+    y="150"
+    width="28"
+    height="40"
+    rx="12"
+    fill="#c99570"
+/>
+
+
+<!-- face -->
+
+<ellipse
+    cx="105"
+    cy="125"
+    rx="47"
+    ry="57"
+    fill="#c99570"
+/>
+
+
+<!-- hair -->
+
+<path
+    d="
+        M60 120
+        Q60 55 105 55
+        Q153 57 150 122
+        Q138 95 120 92
+        Q93 105 60 120
+    "
+    fill="#342824"
+/>
+
+
+<!-- eyebrows -->
+
+<path
+    d="M77 116 Q88 111 98 116"
+    stroke="#30211d"
+    stroke-width="4"
+    fill="none"
+/>
+
+<path
+    d="M112 116 Q122 111 133 116"
+    stroke="#30211d"
+    stroke-width="4"
+    fill="none"
+/>
+
+
+<!-- eyes -->
+
+<circle
+    cx="88"
+    cy="127"
+    r="4"
+    fill="#11151a"
+/>
+
+<circle
+    cx="122"
+    cy="127"
+    r="4"
+    fill="#11151a"
+/>
+
+
+<!-- nose -->
+
+<path
+    d="M105 130 L101 149 L109 151"
+    stroke="#976b55"
+    stroke-width="2"
+    fill="none"
+/>
+
+
+<!-- smile -->
+
+<path
+    d="M94 161 Q105 168 116 161"
+    stroke="#7f4141"
+    stroke-width="3"
+    fill="none"
+/>
+
+
+<!-- arms -->
+
+<path
+    d="M62 195 L35 278"
+    stroke="#405d7a"
+    stroke-width="25"
+    stroke-linecap="round"
+/>
+
+<path
+    d="M146 195 L181 235"
+    stroke="#405d7a"
+    stroke-width="25"
+    stroke-linecap="round"
+/>
+
+
+<!-- hands -->
+
+<circle
+    cx="35"
+    cy="280"
+    r="13"
+    fill="#c99570"
+/>
+
+<circle
+    cx="184"
+    cy="239"
+    r="13"
+    fill="#c99570"
+/>
+
+
+<!-- beer -->
+
+<path
+    d="
+        M180 210
+        L211 210
+        L207 255
+        L184 255
+        Z
+    "
+    fill="#d39b36"
+/>
+
+<ellipse
+    cx="195"
+    cy="211"
+    rx="17"
+    ry="7"
+    fill="#f3e6c4"
+/>
+
+</svg>
+
+
+
+<!-- ==============================
+     RIGHT MAN
+     ============================== -->
+
+<svg
+    class="man man-right"
+    viewBox="0 0 220 420"
+>
+
+
+<!-- legs -->
+
+<path
+    d="M87 300 L72 390"
+    stroke="#29303a"
+    stroke-width="25"
+    stroke-linecap="round"
+/>
+
+<path
+    d="M130 300 L147 390"
+    stroke="#29303a"
+    stroke-width="25"
+    stroke-linecap="round"
+/>
+
+
+<!-- shoes -->
+
+<ellipse
+    cx="67"
+    cy="397"
+    rx="32"
+    ry="10"
+    fill="#0d1116"
+/>
+
+<ellipse
+    cx="153"
+    cy="397"
+    rx="32"
+    ry="10"
+    fill="#0d1116"
+/>
+
+
+<!-- body -->
+
+<path
+    d="
+        M68 185
+        Q110 165 152 185
+        L162 305
+        Q110 325 50 305
+        Z
+    "
+    fill="#536b48"
+/>
+
+
+<!-- neck -->
+
+<rect
+    x="96"
+    y="150"
+    width="28"
+    height="40"
+    rx="12"
+    fill="#b98262"
+/>
+
+
+<!-- FACE -->
+
+<ellipse
+    cx="110"
+    cy="125"
+    rx="47"
+    ry="57"
+    fill="#b98262"
+/>
+
+
+<!-- hair -->
+
+<path
+    d="
+        M65 115
+        Q66 55 111 55
+        Q157 60 157 120
+        Q142 94 120 91
+        Q94 104 65 115
+    "
+    fill="#20252a"
+/>
+
+
+<!-- ears -->
+
+<circle
+    cx="64"
+    cy="132"
+    r="9"
+    fill="#b98262"
+/>
+
+<circle
+    cx="156"
+    cy="132"
+    r="9"
+    fill="#b98262"
+/>
+
+
+<!-- eyebrows -->
+
+<path
+    d="M82 116 Q93 111 103 116"
+    stroke="#202025"
+    stroke-width="4"
+    fill="none"
+/>
+
+<path
+    d="M117 116 Q128 111 138 116"
+    stroke="#202025"
+    stroke-width="4"
+    fill="none"
+/>
+
+
+<!-- eyes -->
+
+<ellipse
+    cx="93"
+    cy="128"
+    rx="5"
+    ry="4"
+    fill="#11151a"
+/>
+
+<ellipse
+    cx="127"
+    cy="128"
+    rx="5"
+    ry="4"
+    fill="#11151a"
+/>
+
+
+<!-- eye highlights -->
+
+<circle
+    cx="94"
+    cy="127"
+    r="1.3"
+    fill="white"
+/>
+
+<circle
+    cx="128"
+    cy="127"
+    r="1.3"
+    fill="white"
+/>
+
+
+<!-- nose -->
+
+<path
+    d="
+        M110 130
+        L106 149
+        L114 151
+    "
+    stroke="#8b5e4c"
+    stroke-width="2"
+    fill="none"
+/>
+
+
+<!-- beard -->
+
+<path
+    d="
+        M80 153
+        Q110 185 140 153
+        Q136 188 110 192
+        Q84 188 80 153
+    "
+    fill="#272426"
+    opacity="0.8"
+/>
+
+
+<!-- moustache -->
+
+<path
+    d="
+        M97 160
+        Q110 153 123 160
+        Q110 168 97 160
+    "
+    fill="#242125"
+/>
+
+
+<!-- mouth -->
+
+<path
+    d="M101 169 Q110 173 119 169"
+    stroke="#6d4141"
+    stroke-width="2"
+    fill="none"
+/>
+
+
+<!-- left arm -->
+
+<path
+    d="M69 195 L35 235"
+    stroke="#536b48"
+    stroke-width="25"
+    stroke-linecap="round"
+/>
+
+
+<!-- hand -->
+
+<circle
+    cx="32"
+    cy="239"
+    r="13"
+    fill="#b98262"
+/>
+
+
+<!-- beer glass -->
+
+<path
+    d="
+        M18 210
+        L49 210
+        L45 255
+        L22 255
+        Z
+    "
+    fill="#d39b36"
+/>
+
+
+<!-- beer -->
+
+<path
+    d="
+        M22 225
+        L46 225
+        L44 253
+        L24 253
+        Z
+    "
+    fill="#e2a52f"
+/>
+
+
+<!-- foam -->
+
+<ellipse
+    cx="34"
+    cy="211"
+    rx="17"
+    ry="7"
+    fill="#f3e6c4"
+/>
+
+
+<!-- glass shine -->
+
+<path
+    d="M26 219 L28 247"
+    stroke="white"
+    stroke-width="3"
+    opacity="0.35"
+/>
+
+
+<!-- right arm -->
+
+<path
+    d="M150 195 L183 280"
+    stroke="#536b48"
+    stroke-width="25"
+    stroke-linecap="round"
+/>
+
+
+<!-- right hand -->
+
+<circle
+    cx="185"
+    cy="284"
+    r="13"
+    fill="#b98262"
+/>
+
+</svg>
+
+</div>
+
+
+<!-- ==============================
+     COUNTDOWN CIRCLE
+     ============================== -->
+
+<div class="countdown">
+
+
+<svg
+    class="ring"
+    viewBox="0 0 220 220"
+>
+
+
+<circle
+    class="ring-background"
+    cx="110"
+    cy="110"
+    r="96"
+/>
+
+
+<circle
+    id="progressRing"
+    class="ring-progress"
+    cx="110"
+    cy="110"
+    r="96"
+/>
+
+</svg>
+
+
+<div class="center">
+
+    <div class="center-title">
+        TIME REMAINING
+    </div>
+
+    <div
+        id="time"
+        class="time"
+    >
+        Loading...
+    </div>
+
+    <div class="labels">
+        DAYS &nbsp; HOURS &nbsp; MINUTES &nbsp; SECONDS
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- ==============================
+     TARGET DATE
+     ============================== -->
+
+<div class="target">
+
+    <div class="target-label">
+        TARGET DATE
+    </div>
+
+    <div
+        id="targetDate"
+        class="target-date"
+    >
+        September 18
+    </div>
+
+    <div
+        id="status"
+        class="status"
+    >
+        ● Starting
+    </div>
+
+</div>
+
+
+<div class="footer">
+    Updates automatically
+</div>
+
+
+</div>
+
+
+<script>
+
+/*
+=========================================================
+MUSU COUNTDOWN
+=========================================================
+*/
+
+
+/*
+   Get the countdown display.
+*/
+
+var time =
+    document.getElementById("time");
+
+
+/*
+   Get the target date display.
+*/
+
+var targetDate =
+    document.getElementById("targetDate");
+
+
+/*
+   Get status.
+*/
+
+var status =
+    document.getElementById("status");
+
+
+/*
+   Get circle.
+*/
+
+var ring =
+    document.getElementById("progressRing");
+
+
+/*
+=========================================================
+CIRCLE SETUP
+=========================================================
+*/
+
+var radius = 96;
+
+var circumference =
+    2 * Math.PI * radius;
+
+ring.style.strokeDasharray =
+    circumference;
+
+ring.style.strokeDashoffset =
+    circumference;
+
+
+/*
+=========================================================
+GET SEPTEMBER 18
+=========================================================
+*/
+
+function getTarget() {
+
+    /*
+       Get the iPhone's current local time.
+    */
+
+    var now =
+        new Date();
+
+
+    /*
+       Get current year.
+    */
+
+    var year =
+        now.getFullYear();
+
+
+    /*
+       JavaScript months start at ZERO.
+
+       0  = January
+       1  = February
+       ...
+       8  = September
+
+       Therefore:
+
+       new Date(year, 8, 18)
+       = September 18
+    */
+
+    var target =
+        new Date(
+            year,
+            8,
+            18,
+            0,
+            0,
+            0,
+            0
+        );
+
+
+    /*
+       If September 18 has already happened,
+       count toward next September 18.
+    */
+
+    if (
+        now.getTime() >=
+        target.getTime()
+    ) {
+
+        target =
+            new Date(
+                year + 1,
+                8,
+                18,
+                0,
+                0,
+                0,
+                0
+            );
+    }
+
+
+    return target;
+}
+
+
+/*
+=========================================================
+UPDATE
+=========================================================
+*/
+
+function update() {
+
+    /*
+       Current phone time.
+    */
+
+    var now =
+        new Date();
+
+
+    /*
+       September 18 target.
+    */
+
+    var target =
+        getTarget();
+
+
+    /*
+       Difference in milliseconds.
+    */
+
+    var difference =
+        target.getTime()
+        -
+        now.getTime();
+
+
+    /*
+       Convert to seconds.
+    */
+
+    var totalSeconds =
+        Math.floor(
+            difference / 1000
+        );
+
+
+    /*
+       DAYS
+    */
+
+    var days =
+        Math.floor(
+            totalSeconds / 86400
+        );
+
+
+    /*
+       HOURS
+    */
+
+    var hours =
+        Math.floor(
+            (
+                totalSeconds % 86400
+            ) / 3600
+        );
+
+
+    /*
+       MINUTES
+    */
+
+    var minutes =
+        Math.floor(
+            (
+                totalSeconds % 3600
+            ) / 60
+        );
+
+
+    /*
+       SECONDS
+    */
+
+    var seconds =
+        totalSeconds % 60;
+
+
+    /*
+       Put the countdown on screen.
+
+       Example:
+
+       31 : 07 : 42 : 19
+    */
+
+    time.innerHTML =
+        String(days).padStart(2, "0")
+        + " : "
+        + String(hours).padStart(2, "0")
+        + " : "
+        + String(minutes).padStart(2, "0")
+        + " : "
+        + String(seconds).padStart(2, "0");
+
+
+    /*
+       Show target date.
+    */
+
+    targetDate.innerHTML =
+        target.toLocaleDateString(
+            undefined,
+            {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+                year: "numeric"
+            }
+        );
+
+
+    /*
+       Calculate circle progress.
+    */
+
+    var yearStart =
+        new Date(
+            target.getFullYear(),
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+        );
+
+
+    var yearLength =
+        target.getTime()
+        -
+        yearStart.getTime();
+
+
+    var elapsed =
+        now.getTime()
+        -
+        yearStart.getTime();
+
+
+    var percentage =
+        elapsed / yearLength;
+
+
+    /*
+       Keep between 0 and 1.
+    */
+
+    if (
+        percentage < 0
+    ) {
+        percentage = 0;
+    }
+
+    if (
+        percentage > 1
+    ) {
+        percentage = 1;
+    }
+
+
+    /*
+       Move circle.
+    */
+
+    var offset =
+        circumference
+        -
+        (
+            percentage *
+            circumference
+        );
+
+
+    ring.style.strokeDashoffset =
+        offset;
+
+
+    /*
+       Confirm that JavaScript
+       is running.
+    */
+
+    status.innerHTML =
+        "● LIVE";
+
+}
+
+
+/*
+=========================================================
+START
+=========================================================
+*/
+
+update();
+
+
+/*
+   Update every second.
+*/
+
+setInterval(
+    update,
+    1000
+);
+
+
+/*
+   Recalculate when Safari
+   wakes the page.
+*/
+
+document.addEventListener(
+    "visibilitychange",
+    function() {
+
+        if (
+            !document.hidden
+        ) {
+
+            update();
+
+        }
+
+    }
+);
+
+
+/*
+   Recalculate when Safari
+   restores the page.
+*/
+
+window.addEventListener(
+    "pageshow",
+    function() {
+
+        update();
+
+    }
+);
+
+</script>
+
+
+</body>
+</html>
